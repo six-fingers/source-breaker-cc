@@ -14,5 +14,19 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
+
+    // 
+    $request->headers->set('Accept', 'application/json');
+    // 
+
+
+
     return $request->user();
 });
+
+
+Route::get('/token', "TokenController@index");
+
+Route::middleware('auth:api')->post('/item', "ItemController@create");
+Route::middleware('auth:api')->delete('/item', "ItemController@destroy");
+Route::middleware('auth:api')->put('/item', "ItemController@update");
