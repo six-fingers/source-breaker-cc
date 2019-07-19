@@ -30,3 +30,4 @@ Route::get('/token', "TokenController@index");
 Route::middleware('auth:api')->post('/item', "ItemController@create");
 Route::middleware('auth:api')->delete('/item', "ItemController@destroy");
 Route::middleware('auth:api')->put('/item', "ItemController@update");
+Route::middleware('auth:api')->get('/items', "ItemController@index");
