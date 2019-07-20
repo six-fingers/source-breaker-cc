@@ -18,7 +18,6 @@ class CreateItemsTable extends Migration
             $table->string('name');
             $table->boolean('is_done');
             $table->timestamps();
-
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
         });
