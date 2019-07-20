@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\User;
 use App\Http\Requests\TokenGetRequest;
 use Illuminate\Support\Facades\Hash;
@@ -17,14 +16,6 @@ class TokenController extends Controller
      */
     public function index( TokenGetRequest $request )
     {
-
-
-// 
-        $request->headers->set('Accept', 'application/json');
-// 
-
-
-
         $user = User::where('email', $request->get('email'))->first();
 
         if( !empty($user) ) {
@@ -36,7 +27,7 @@ class TokenController extends Controller
         }
 
         return response()->json([
-            'access_token' => $user->api_token
+            'api_token' => $user->api_token
         ]);
     }
 

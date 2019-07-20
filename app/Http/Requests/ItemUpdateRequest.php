@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Item;
 
 class ItemUpdateRequest extends ApiRequest
 {
@@ -13,7 +14,7 @@ class ItemUpdateRequest extends ApiRequest
      */
     public function authorize()
     {
-        return true;
+       return true;
     }
 
     /**

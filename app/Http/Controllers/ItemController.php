@@ -6,11 +6,21 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ItemCreateRequest;
 use App\Http\Requests\ItemDeleteRequest;
 use App\Http\Requests\ItemUpdateRequest;
-use App\Item;
-use Illuminate\Support\Facades\DB;
+use App\Repositories\UserItemRepository;
 
 class ItemController extends Controller
 {
+
+    /**
+     * Controller Constructor Method.
+     * 
+     * @param  UserItemRepository  $userItemRepository
+     */
+    public function __construct(UserItemRepository $userItemRepository)
+    {
+        $this->userItemRepository = $userItemRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,9 +28,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $user_id = auth('api')->user()->id;
-        
-        $items = Item::where('user_id', $user_id )->get();
+        $items = $this->userItemRepository->all();
 
         return response()->json( $items );
     }
@@ -28,27 +36,16 @@ class ItemController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param ItemCreateRequest $request
      * @return \Illuminate\Http\Response
      */
     public function create( ItemCreateRequest $request )
     {
-        // 
-        $request->headers->set('Accept', 'application/json');
-        //
-
-
-        $item = new Item;
-        $item->name = $request->name;
-        $item->user_id = auth('api')->user()->id;
-        $item->save();
-
-        $id = DB::getPdo()->lastInsertId();
-        $item = Item::find( $id );
+        $item = $this->userItemRepository->create(
+            $request->only('name')
+        );
         
         return response()->json( $item );
-
-        // die('crateItem');
-        //
     }
 
     /**
@@ -92,15 +89,9 @@ class ItemController extends Controller
      */
     public function update(ItemUpdateRequest $request)
     {
-        $item = Item::find( $request->id );
-
-        if( !$item ) {
-            throw new \Exception('Item Not Found', 404);
-        }
-
-        $item->is_done = !$item->is_done;
-
-        $item->save();
+        $item = $this->userItemRepository->update(
+            $request->id
+        );
 
         return response()->json( $item );
     }
@@ -113,13 +104,7 @@ class ItemController extends Controller
      */
     public function destroy( ItemDeleteRequest $request )
     {
-        $item = Item::find( $request->id );
-
-        if( !$item ) {
-            throw new \Exception('Item Not Found', 404);
-        }
-
-        $item->delete();
+        $item = $this->userItemRepository->delete( $request->id );
 
         return response()->json( $item );
     }
